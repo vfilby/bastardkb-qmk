@@ -6,7 +6,6 @@ import os
 import os.path
 import re
 import shlex
-import shutil
 import signal
 import subprocess
 import sys
@@ -88,6 +87,12 @@ ALL_MCUS: Sequence[str] = (
   *ARM_MCUS,
 )
 
+MIRYOKU_COMPATIBLE_KEYBOARDS: Sequence[str] = (
+  'charybdis/3x5/v2/splinky_3',
+  'dilemma/3x5_3',
+  'skeletyl/v2/splinky_3',
+)
+
 ALL_FIRMWARES: Sequence[FirmwareList] = (
   # All firmwares built on the `bkb-master` branch, ie. the branch tracking
   # `qmk/qmk_firmware:master`.
@@ -99,63 +104,35 @@ ALL_FIRMWARES: Sequence[FirmwareList] = (
       # their "stock" configuration is using the `default` keymap instead.
       *tuple(
         Firmware(
-          keyboard=f"{keyboard}/{mcu}",
+          keyboard=f"{keyboard}/v2/splinky_3",
           keymap="default",
           keymap_alias="stock",
           env_vars=("VIA_ENABLE=yes",),
-        ) for keyboard in DACMAN_KEYBOARD_FAMILY for mcu in ALL_MCUS),
+        ) for keyboard in DACMAN_KEYBOARD_FAMILY),
       # Use the `via` keymap for the Charybdis boards (ie. the Charybdis,
       # Charybdis mini, and Charybdis nano).  These boards have a very
       # bare `default` keymap, and their "stock" configuration is using
       # the `via` keymap instead.
       *tuple(
         Firmware(
-          keyboard=f"{keyboard}/{mcu}",
+          keyboard=f"{keyboard}/v2/splinky_3",
           keymap="via",
           keymap_alias="stock",
-        ) for keyboard in CHARYBDIS_KEYBOARD_FAMILY for mcu in ALL_MCUS),
-      # Also build the Blackpill firmwares in uf2 format.
-      *tuple(
-        Firmware(
-          keyboard=f"{keyboard}/blackpill",
-          keymap="default",
-          keymap_alias="stock",
-          env_vars=("BOOTLOADER=tinyuf2", "VIA_ENABLE=yes"),
-        ) for keyboard in DACMAN_KEYBOARD_FAMILY),
-      *tuple(
-        Firmware(
-          keyboard=f"{keyboard}/blackpill",
-          keymap="via",
-          keymap_alias="stock",
-          env_vars=("BOOTLOADER=tinyuf2",),
         ) for keyboard in CHARYBDIS_KEYBOARD_FAMILY),
+      # Build the `via` keymap for the Dilemma 3x5_3 and 4x6_4.
+      Firmware(keyboard="dilemma/3x5_3", keymap="via", keymap_alias="stock"),
+      Firmware(keyboard="dilemma/4x6_4", keymap="via", keymap_alias="stock"),
+      # Build the `manna-harbour_miryoku` keymap for compatible keyboards.
       *tuple(
         Firmware(
-          keyboard=f"skeletyl/{mcu}",
+          keyboard=keyboard,
           keymap="manna-harbour_miryoku",
           keymap_alias="miryoku",
           env_vars=(
             "MIRYOKU_ALPHAS=QWERTY",
             "MIRYOKU_EXTRA=COLEMAKDH",
           ),
-        ) for mcu in ALL_MCUS),
-      Firmware(
-        keyboard="skeletyl/blackpill",
-        keymap="manna-harbour_miryoku",
-        keymap_alias="miryoku",
-        env_vars=(
-          "BOOTLOADER=tinyuf2",
-          "MIRYOKU_ALPHAS=QWERTY",
-          "MIRYOKU_EXTRA=COLEMAKDH",
-        ),
-      ),
-      Firmware(keyboard="dilemma/3x5_2/assembled",
-               keymap="via",
-               keymap_alias="stock"),
-      Firmware(keyboard="dilemma/3x5_2/splinky",
-               keymap="via",
-               keymap_alias="stock"),
-      Firmware(keyboard="dilemma/3x5_3", keymap="via", keymap_alias="stock"),
+        ) for keyboard in MIRYOKU_COMPATIBLE_KEYBOARDS),
     ),
   ),)
 
@@ -414,32 +391,6 @@ def copy_firmware_to_output_dir(reporter: Reporter, output_dir: Path,
     reporter.logging.exception("failed to copy firmware to output directory")
 
 
-def copy_assets_to_output_dir(executor: Executor, reporter: Reporter,
-                              output_dir: Path, repository_path: Path):
-  reporter.newline()
-  reporter.info("Copying BastardKB firmwares assets")
-
-  try:
-    via_json_dir = (repository_path / "main" / "via").resolve()
-  except FileExistsError:
-    reporter.error("Cannot find Via's JSON files directory")
-    return
-
-  if not via_json_dir.is_dir():
-    reporter.error(f"{via_json_dir} is not a directory")
-    return
-
-  via_json_list = [f for f in via_json_dir.glob("*.via.json") if f.is_file()]
-  reporter.info(
-    f"  Copying [magenta]Via[/] definition files ({len(via_json_list)} files)")
-  for src in via_json_list:
-    dst = output_dir / src.name
-    if not executor.dry_run:
-      shutil.copyfile(src, dst)
-    reporter.info(f"    [not bold white]{src.name}[/] [green]ok[/]")
-    reporter.logging.debug(f"copy: {src} -> {dst}")
-
-
 def sigint_handler(reporter: Reporter, signal, frame):
   del signal, frame
   reporter.progress_status("Interrupted. Exiting…")
@@ -527,10 +478,6 @@ def main() -> None:
       cmdline_args.output_dir,
     ),
   )
-
-  # Copy assets.
-  copy_assets_to_output_dir(executor, reporter, cmdline_args.output_dir,
-                            cmdline_args.repository)
 
 
 if __name__ == "__main__":
