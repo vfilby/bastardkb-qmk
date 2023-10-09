@@ -67,7 +67,7 @@ If you have any questions, feel free to reach out for help on the [Discord](http
 
 ## Via
 
-[Via](https://usevia.app) is an open-source cross-platform (Windows, Linux and Mac) GUI and a QMK fork for configuring your keyboard in real time.
+[Via](https://usevia.app) is an open-source cross-platform (Windows, Linux and Mac) GUI for QMK powered keyboards for configuring your keymap in real time.
 
 ![The Via interface on a Charybdis Nano](https://raw.githubusercontent.com/BastardKb/bastardkb-qmk/main/assets/via.png)
 
