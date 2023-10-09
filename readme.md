@@ -196,7 +196,7 @@ The **Splinky v3** is a controller the form factor of a pro-micro (e.g. Elite-Pi
 The **Splinktegrated** is a Splinky v3 directly integrated on a Shield PCB, with additional ESD protection on the audio jack, more memory, and requiring less pre-assembly.
 
 | Splinky v3 (on shield PCB) | Splinktegrated |
-| -------------------------- | ------------- |
+| --- | --- |
 | ![Splinky v3 on a shield PCB](assets/splinky_v3_on_shield_pcb.jpg) | ![Splinktegrated](assets/splinktegrated.jpg) |
 
 ## AVR
