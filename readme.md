@@ -18,7 +18,7 @@ The format of the firmware file name is:
 bastardkb_{keyboard}_vendor.uf2
 ```
 
-`vendor` refers to the keymap. This keymap is available for all boards and comes preflashed when ordering a key or a prebuilt from the shop. For some keyboards (namely, those with a 3x5 form factor), the [Miryoku](https://github.com/manna-harbour/miryoku) keymap is also available for download.
+`vendor` refers to the keymap. This keymap is available for all boards and comes preflashed when ordering a kit or a prebuilt from the shop. For some keyboards (namely, those with a 3x5 form factor), the [Miryoku](https://github.com/manna-harbour/miryoku) keymap is also available for download.
 
 The `vendor` keymap is compatible out-of-the-box with [Via](https://usevia.app).
 
@@ -28,8 +28,8 @@ The `vendor` keymap is compatible out-of-the-box with [Via](https://usevia.app).
 
 The **Dilemma** and the **Dilemma Max** both have the controller built in, so `{keyboard}` is one of the following:
 
-- `dilemma_3x5_3`: the 3x5+3 [Dilemma](https://github.com/Bastardkb/Dilemma)
-- `dilemma_4x6_4`: the 4x6+4 [Dilemma Max](https://github.com/Bastardkb/Dilemma)
+- `dilemma_3x5_3`: the 3x5+3 [Dilemma](https://github.com/bastardkb/dilemma/)
+- `dilemma_4x6_4`: the 4x6+4 [Dilemma Max](https://github.com/bastardkb/dilemma/)
 
 ### Dilemma 3x5+2
 
@@ -39,12 +39,12 @@ The firmware for the **Dilemma 3x5+2** is not available for download, and must b
 
 `{keyboard}` corresponds to the physical keyboard you are looking the firmware for. It can be one of the following:
 
-- `skeletyl`: the 3x5+3 [Skeletyl](https://github.com/Bastardkb/Skeletyl)
-- `tbkmini`: the 3x6+3 [TBK Mini](https://github.com/Bastardkb/TBK-Mini)
+- `skeletyl`: the 3x5+3 [Skeletyl](https://github.com/Bastardkb/Skeletyl/)
+- `tbkmini`: the 3x6+3 [TBK Mini](https://github.com/Bastardkb/TBK-Mini/)
 - `scylla`: the 4x6+5 [Scylla](https://github.com/Bastardkb/Scylla)
-- `charybdis_3x5`: the 3x5+3 [Charybdis Nano](https://github.com/Bastardkb/Charybdis)
-- `charybdis_3x6`: the 3x6+3 [Charybdis Mini](https://github.com/Bastardkb/Charybdis)
-- `charybdis_4x6`: the 4x6+5 [Charybdis](https://github.com/Bastardkb/Charybdis)
+- `charybdis_3x5`: the 3x5+3 [Charybdis Nano](https://github.com/bastardkb/charybdis/)
+- `charybdis_3x6`: the 3x6+3 [Charybdis Mini](https://github.com/bastardkb/charybdis/)
+- `charybdis_4x6`: the 4x6+5 [Charybdis](https://github.com/bastardkb/charybdis/)
 
 If you have any doubts, feel free to reach out for help on the [Discord](https://bastardkb.com/discord).
 
@@ -112,7 +112,7 @@ To flash the firmware from the command-line, replace `compile` with `flash` in t
 qmk flash -c -kb bastardkb/{keyboard-arg} -km {keymap} # On the bkb-master branch
 ```
 
-After compilation, QMK waits for the keyboard to become available as a dfu device to upload firmware. Press the `reset` button on the keyboard to complete the process.
+After compilation, QMK waits for the keyboard to become available as a dfu device to upload firmware. Double press the `reset` button on the keyboard to complete the process.
 
 ### `{keyboard-arg}`
 
@@ -122,15 +122,15 @@ The `{keyboard-arg}` depends on the keyboard you are building the firmware for (
 
 The **Dilemma** and the **Dilemma Max** both have the controller built in, so `{keyboard-arg}` is one of the following:
 
-- `dilemma/3x5_3`: the 3x5+3 [Dilemma](https://github.com/Bastardkb/Dilemma)
-- `dilemma/4x6_4`: the 4x6+4 [Dilemma Max](https://github.com/Bastardkb/Dilemma)
+- `dilemma/3x5_3`: the 3x5+3 [Dilemma](https://github.com/bastardkb/dilemma/)
+- `dilemma/4x6_4`: the 4x6+4 [Dilemma Max](https://github.com/bastardkb/dilemma/)
 
 #### Dilemma 3x5+2
 
 For the **Dilemma 3x5+2**, `{keyboard-arg}` can be one of the following:
 
-- `dilemma/3x5_2/splinky`: for the [DIY version of the Dilemma](https://github.com/Bastardkb/Dilemma)
-- `dilemma/3x5_2/assembled`: for the [pre-assembled version of the Dilemma](https://github.com/Bastardkb/Dilemma)
+- `dilemma/3x5_2/splinky`: for the [DIY version of the Dilemma](https://github.com/bastardkb/dilemma)
+- `dilemma/3x5_2/assembled`: for the [pre-assembled version of the Dilemma](https://github.com/bastardkb/dilemma)
 
 #### Charybdis and Dactyls
 
@@ -144,12 +144,12 @@ The `{keyboard-arg}` format is:
 
 `{keyboard}` corresponds to the physical keyboard you are building the firmware for. It can be one of the following:
 
-- `skeletyl`: the 3x5+3 [Skeletyl](https://github.com/Bastardkb/Skeletyl)
-- `tbkmini`: the 3x6+3 [TBK Mini](https://github.com/Bastardkb/TBK-Mini)
+- `skeletyl`: the 3x5+3 [Skeletyl](https://github.com/Bastardkb/Skeletyl/)
+- `tbkmini`: the 3x6+3 [TBK Mini](https://github.com/Bastardkb/TBK-Mini/)
 - `scylla`: the 4x6+5 [Scylla](https://github.com/Bastardkb/Scylla)
-- `charybdis_3x5`: the 3x5+3 [Charybdis Nano](https://github.com/Bastardkb/Charybdis)
-- `charybdis_3x6`: the 3x6+3 [Charybdis Mini](https://github.com/Bastardkb/Charybdis)
-- `charybdis_4x6`: the 4x6+5 [Charybdis](https://github.com/Bastardkb/Charybdis)
+- `charybdis_3x5`: the 3x5+3 [Charybdis Nano](https://github.com/bastardkb/charybdis/)
+- `charybdis_3x6`: the 3x6+3 [Charybdis Mini](https://github.com/bastardkb/charybdis/)
+- `charybdis_4x6`: the 4x6+5 [Charybdis](https://github.com/bastardkb/charybdis/)
 
 ##### Microcontroller/adapter
 
@@ -188,20 +188,20 @@ The file extension is either `.hex`, `.bin` or `.uf2`. Which extension is used d
 
 All recent kits and prebuilt (mid 2022 and onward) from Bastard Keyboards ship with a RP2040-ce compatible controller, either:
 
-- Splinky v3
-- Splinktegrated
+- [Splinky v3](https://github.com/bastardkb/splinky)
+- [Splinktegrated](https://github.com/Bastardkb/Splinktegrated/)
 
 The **Splinky v3** is a controller the form factor of a pro-micro (e.g. Elite-Pi). It must be mounted on a *Shield PCB* before being fitted into the keyboard.
 
-The **Splinktegrated** is essentially a Splinky v3 directly integrated on a Shield PCB, with additional ESD protection on the audio jack, more memory, and requiring less pre-assembly.
+The **Splinktegrated** is a Splinky v3 directly integrated on a Shield PCB, with additional ESD protection on the audio jack, more memory, and requiring less pre-assembly.
 
 | Splinky v3 (on shield PCB) | Splinktegrated |
-| --- | --- |
+| -------------------------- | ------------- |
 | ![Splinky v3 on a shield PCB](assets/splinky_v3_on_shield_pcb.jpg) | ![Splinktegrated](assets/splinktegrated.jpg) |
 
 ## AVR
 
-AVR refers to the (now deprecated) family of controllers using the AVR architecture (e.g. Elite-C, Pro-Micro, etc…). Older kits and prebuilts from Bastard Keyboards were shipping with an Elite-C.
+AVR refers to the (now deprecated) family of controllers using the AVR architecture (e.g. Elite-C, Pro-Micro, etc…). Older kits and prebuilts from Bastard Keyboards were shipped with an Elite-C.
 
 ### Installing the keymap
 
