@@ -197,7 +197,7 @@ The **Splintegrated** is essentially a Splinky v3 directly integrated on a Shiel
 
 | Splinky v3 (on shield PCB) | Splintegrated |
 | -------------------------- | ------------- |
-| [Splinky v3 on a shield PCB](assets/splinky_v3_on_shield_pcb.jpg) | [Splintegrated](assets/splintegrated.jpg) |
+| ![Splinky v3 on a shield PCB](assets/splinky_v3_on_shield_pcb.jpg) | ![Splintegrated](assets/splintegrated.jpg) |
 
 ## AVR
 
