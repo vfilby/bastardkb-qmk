@@ -184,20 +184,20 @@ The file extension is either `.hex`, `.bin` or `.uf2`. Which extension is used d
 
 # Controllers
 
-## Splinky v3 and Splintegrated
+## Splinky v3 and Splinktegrated
 
 All recent kits and prebuilt (mid 2022 and onward) from Bastard Keyboards ship with a RP2040-ce compatible controller, either:
 
 - Splinky v3
-- Splintegrated
+- Splinktegrated
 
 The **Splinky v3** is a controller the form factor of a pro-micro (e.g. Elite-Pi). It must be mounted on a *Shield PCB* before being fitted into the keyboard.
 
-The **Splintegrated** is essentially a Splinky v3 directly integrated on a Shield PCB, requiring no pre-assembly.
+The **Splinktegrated** is essentially a Splinky v3 directly integrated on a Shield PCB, with additional ESD protection on the audio jack, more memory, and requiring less pre-assembly.
 
-| Splinky v3 (on shield PCB) | Splintegrated |
+| Splinky v3 (on shield PCB) | Splinktegrated |
 | -------------------------- | ------------- |
-| ![Splinky v3 on a shield PCB](assets/splinky_v3_on_shield_pcb.jpg) | ![Splintegrated](assets/splintegrated.jpg) |
+| ![Splinky v3 on a shield PCB](assets/splinky_v3_on_shield_pcb.jpg) | ![Splinktegrated](assets/splinktegrated.jpg) |
 
 ## AVR
 
