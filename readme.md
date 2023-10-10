@@ -180,7 +180,7 @@ qmk compile -c -kb {keyboard-arg} -km default -e VIA_ENABLE=yes
 
 ### Extension
 
-The file extension is either `.hex`, `.bin` or `.uf2`. Which extension is used depends on the microcontroller and, in some cases, on some build options.
+The file extension is either `.hex`, `.bin` or `.uf2`. The Splinky and Splinktegrated use the `uf2` format. If you use a different controller, please consult the documentation for your controller and its bootloader.
 
 # Controllers
 
