@@ -31,18 +31,19 @@ from rich.progress import (
   TextColumn,
   TimeElapsedColumn,
 )
-from typing import NamedTuple, Optional
+from typing import NamedTuple, Optional, Tuple
 
 
 class Firmware(NamedTuple):
   keyboard: str
   keymap: str
+  keyboard_alias: Optional[str] = None
   keymap_alias: Optional[str] = None
   env_vars: Sequence[str] = []
 
   @property
   def output_filename(self) -> str:
-    return f"bastardkb_{self.keyboard.replace('/', '_')}_{self.keymap_alias or self.keymap}"
+    return f"bastardkb_{(self.keyboard_alias or self.keyboard).replace('/', '_')}_{self.keymap_alias or self.keymap}"
 
   def __str__(self) -> str:
     return f"{self.keyboard}:{self.keymap}"
@@ -87,10 +88,10 @@ ALL_MCUS: Sequence[str] = (
   *ARM_MCUS,
 )
 
-MIRYOKU_COMPATIBLE_KEYBOARDS: Sequence[str] = (
-  'charybdis/3x5/v2/splinky_3',
-  'dilemma/3x5_3',
-  'skeletyl/v2/splinky_3',
+MIRYOKU_COMPATIBLE_KEYBOARDS: Sequence[Tuple[str, str]] = (
+  ('charybdis/3x5/v2/splinky_3', 'charybdis/3x5'),
+  ('dilemma/3x5_3', 'dilemma/3x5_3'),
+  ('skeletyl/v2/splinky_3', 'skeletyl'),
 )
 
 ALL_FIRMWARES: Sequence[FirmwareList] = (
@@ -101,38 +102,41 @@ ALL_FIRMWARES: Sequence[FirmwareList] = (
     configurations=(
       # Use the `default` keymap for the non-Charybdis boards (ie. Scylla,
       # TBK mini, Skeletyl).  These board don't have a `via` keymap and
-      # their "stock" configuration is using the `default` keymap instead.
+      # their "vendor" configuration is using the `default` keymap instead.
       *tuple(
         Firmware(
           keyboard=f"{keyboard}/v2/splinky_3",
+          keyboard_alias=keyboard,
           keymap="default",
-          keymap_alias="stock",
+          keymap_alias="vendor",
           env_vars=("VIA_ENABLE=yes",),
         ) for keyboard in DACMAN_KEYBOARD_FAMILY),
       # Use the `via` keymap for the Charybdis boards (ie. the Charybdis,
       # Charybdis mini, and Charybdis nano).  These boards have a very
-      # bare `default` keymap, and their "stock" configuration is using
+      # bare `default` keymap, and their "vendor" configuration is using
       # the `via` keymap instead.
       *tuple(
         Firmware(
           keyboard=f"{keyboard}/v2/splinky_3",
+          keyboard_alias=keyboard,
           keymap="via",
-          keymap_alias="stock",
+          keymap_alias="vendor",
         ) for keyboard in CHARYBDIS_KEYBOARD_FAMILY),
       # Build the `via` keymap for the Dilemma 3x5_3 and 4x6_4.
-      Firmware(keyboard="dilemma/3x5_3", keymap="via", keymap_alias="stock"),
-      Firmware(keyboard="dilemma/4x6_4", keymap="via", keymap_alias="stock"),
+      Firmware(keyboard="dilemma/3x5_3", keymap="via", keymap_alias="vendor"),
+      Firmware(keyboard="dilemma/4x6_4", keymap="via", keymap_alias="vendor"),
       # Build the `manna-harbour_miryoku` keymap for compatible keyboards.
       *tuple(
         Firmware(
           keyboard=keyboard,
+          keyboard_alias=keyboard_alias,
           keymap="manna-harbour_miryoku",
           keymap_alias="miryoku",
           env_vars=(
             "MIRYOKU_ALPHAS=QWERTY",
             "MIRYOKU_EXTRA=COLEMAKDH",
           ),
-        ) for keyboard in MIRYOKU_COMPATIBLE_KEYBOARDS),
+        ) for keyboard, keyboard_alias in MIRYOKU_COMPATIBLE_KEYBOARDS),
     ),
   ),)
 
