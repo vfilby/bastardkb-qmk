@@ -147,9 +147,9 @@ The `{keyboard-arg}` format is:
 - `skeletyl`: the 3x5+3 [Skeletyl](https://github.com/Bastardkb/Skeletyl/)
 - `tbkmini`: the 3x6+3 [TBK Mini](https://github.com/Bastardkb/TBK-Mini/)
 - `scylla`: the 4x6+5 [Scylla](https://github.com/Bastardkb/Scylla)
-- `charybdis_3x5`: the 3x5+3 [Charybdis Nano](https://github.com/bastardkb/charybdis/)
-- `charybdis_3x6`: the 3x6+3 [Charybdis Mini](https://github.com/bastardkb/charybdis/)
-- `charybdis_4x6`: the 4x6+5 [Charybdis](https://github.com/bastardkb/charybdis/)
+- `charybdis/3x5`: the 3x5+3 [Charybdis Nano](https://github.com/bastardkb/charybdis/)
+- `charybdis/3x6`: the 3x6+3 [Charybdis Mini](https://github.com/bastardkb/charybdis/)
+- `charybdis/4x6`: the 4x6+5 [Charybdis](https://github.com/bastardkb/charybdis/)
 
 ##### Microcontroller/adapter
 
