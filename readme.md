@@ -223,3 +223,11 @@ To flash your keyboard:
 The new firmware is now installed on both halves. Close QMK Toolbox, connect the two halves with the TRS/TRRS cable, and connect one half to the PC/Mac.
 
 If you have any questions, feel free to reach out for help on the [Discord](https://bastardkb.com/discord).
+
+# Vial
+
+[Vial](https://get.vial.today/) is an alternative to Via, with a slightly different feature set. The main benefit of Vial over Via was the ability to embed the keyboard descriptor file (a.k.a. the "JSON" file) directly into the firmware such that the remapping tool could directly read it from the controller's memory instead of fetching it from somewhere else (e.g. a public repository like Via does) or manually side-loading it.
+
+Bastard Keyboards used to support Vial over Via. However, the additional storage space required for Vial quickly become a bottleneck for the Charybdis line of keyboard. For this reason, [Vial support for AVR was dropped](https://github.com/Bastardkb/bastardkb-qmk/issues/24) first.
+
+Eventually, Via support was judged more aligned with BKB's long term goals, and Vial integration was dropped entirely in favor of Via, starting from the [v4.0.0](https://github.com/Bastardkb/bastardkb-qmk/releases/tag/v4.0.0) release.
