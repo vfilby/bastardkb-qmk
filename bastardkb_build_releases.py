@@ -16,10 +16,10 @@ from functools import partial, reduce
 from logging.handlers import RotatingFileHandler
 from operator import iconcat
 from pathlib import Path, PurePath
+from pathvalidate import sanitize_filename
 from pygit2 import (
   GitError,
   Repository,
-  Worktree,
 )
 from rich.console import Console, Group
 from rich.live import Live
@@ -125,18 +125,6 @@ ALL_FIRMWARES: Sequence[FirmwareList] = (
       # Build the `via` keymap for the Dilemma 3x5_3 and 4x6_4.
       Firmware(keyboard="dilemma/3x5_3", keymap="via", keymap_alias="vendor"),
       Firmware(keyboard="dilemma/4x6_4", keymap="via", keymap_alias="vendor"),
-      # Build the `manna-harbour_miryoku` keymap for compatible keyboards.
-      *tuple(
-        Firmware(
-          keyboard=keyboard,
-          keyboard_alias=keyboard_alias,
-          keymap="manna-harbour_miryoku",
-          keymap_alias="miryoku",
-          env_vars=(
-            "MIRYOKU_ALPHAS=QWERTY",
-            "MIRYOKU_EXTRA=COLEMAKDH",
-          ),
-        ) for keyboard, keyboard_alias in MIRYOKU_COMPATIBLE_KEYBOARDS),
     ),
   ),)
 
@@ -167,7 +155,7 @@ class Reporter(object):
     self._progress_status = lambda _: None
 
   def log_file(self, basename: str) -> Path:
-    return Path(self.log_dir, basename).with_suffix(".log")
+    return Path(self.log_dir, sanitize_filename(basename)).with_suffix(".log")
 
   def set_progress_status(self, progress_status: Callable[[str], None]) -> None:
     self._progress_status = progress_status
@@ -216,39 +204,34 @@ class Executor(object):
     self.reporter = reporter
     self.repository = repository
 
-  def git_ensure_worktree(self, branch: str,
-                          update_submodules: bool) -> Worktree:
+  def git_prepare_branch(self, branch: str, update_submodules: bool) -> Path:
     self.reporter.progress_status(
       f"Checking out [bright_magenta]{branch}[/bright_magenta]…")
+    if branch not in self.repository.branches:
+      # If the branch is not available locally, fetch it.
+      branch = 'origin/' + branch
     try:
-      worktree = self.repository.lookup_worktree(branch)
-      if worktree is None:
-        raise GitError
+      branch_ref = self.repository.branches[branch]
     except GitError:
-      self.reporter.error(f"Worktree does not exist: {branch}")
+      self.reporter.error(f"Failed to checkout: {branch}")
       sys.exit(1)
     if not self.dry_run:
-      # TODO: checkout worktree if it does not exist.
-      # self.repository.checkout(branch_ref)
+      self.repository.checkout(branch_ref)
       if update_submodules:
         self.reporter.progress_status(
-          f"([bright_magenta]{worktree.name}[/bright_magenta]) Updating submodules…"
-        )
+          f"([bright_magenta]{branch}[/bright_magenta]) Updating submodules…")
         # TODO: use pygit2 to update submodules.
         self._run(
           ("git", "submodule", "update", "--init", "--recursive"),
-          log_file=self.reporter.log_file(
-            f"git-submodule-update-{worktree.name}"),
-          cwd=worktree.path,
+          log_file=self.reporter.log_file(f"git-submodule-update-{branch}"),
+          cwd=self.repository.workdir,
         )
     else:
       self.reporter.progress_status(
-        f"([bright_magenta]{worktree.name}[/bright_magenta]) Updating submodules…"
-      )
-    return worktree
+        f"([bright_magenta]{branch}[/bright_magenta]) Updating submodules…")
+    return self.repository.workdir
 
-  def qmk_compile(self, firmware: Firmware,
-                  worktree: Worktree) -> QmkCompletedProcess:
+  def qmk_compile(self, firmware: Firmware) -> QmkCompletedProcess:
     self.reporter.progress_status(
       f"Compiling [bold white]{firmware}[/bold white]")
     argv = (
@@ -269,7 +252,7 @@ class Executor(object):
     )
     log_file = self.reporter.log_file(f"qmk-compile-{firmware.output_filename}")
     return QmkCompletedProcess(
-      self._run(argv, log_file=log_file, cwd=worktree.path), log_file)
+      self._run(argv, log_file=log_file, cwd=self.repository.workdir), log_file)
 
   def _run(
     self,
@@ -278,6 +261,7 @@ class Executor(object):
     **kwargs,
   ) -> subprocess.CompletedProcess:
     self.reporter.debug(f"exec: {shlex.join(argv)}")
+    self.reporter.debug(f"cwd: {kwargs.get('cwd')}")
     self.reporter.debug(f"output: {log_file}")
     if not self.dry_run:
       with log_file.open("w") as fd:
@@ -356,16 +340,15 @@ def build(
       reporter.info(
         f"  Building off branch [magenta]{branch}[/] ({len(configurations)} firmwares)"
       )
-      worktree = executor.git_ensure_worktree(branch, update_submodules=True)
+      path = executor.git_prepare_branch(branch, update_submodules=True)
 
       # Build firmwares off that branch.
       for firmware in configurations:
-        completed_process = executor.qmk_compile(firmware, worktree)
+        completed_process = executor.qmk_compile(firmware)
         if completed_process.returncode == 0:
           try:
-            on_firmware_compiled(worktree.path /
-                                 read_firmware_filename_from_logs(
-                                   firmware, completed_process.log_file))
+            on_firmware_compiled(path / read_firmware_filename_from_logs(
+              firmware, completed_process.log_file))
             built_firmware_count += 1
             reporter.info(f"    [not bold white]{firmware}[/] [green]ok[/]")
           except FileNotFoundError:
@@ -454,10 +437,6 @@ def main() -> None:
     repository = Repository(cmdline_args.repository)
   except GitError:
     reporter.error("Failed to initialize QMK repository")
-    sys.exit(1)
-
-  if not repository.is_bare:
-    reporter.error(f"Repository must be bare: {repository}")
     sys.exit(1)
 
   # Create output dir if needed.
